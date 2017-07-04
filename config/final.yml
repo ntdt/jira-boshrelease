@@ -1,0 +1,7 @@
+--- 
+blobstore:
+  provider: local
+  options:
+    blobstore_path: /home/camille/Documents/bosh-lite/jira-boshrelease/blobs
+final_name: jira
+

@@ -1,0 +1,6 @@
+---
+name: jira
+dependencies:
+- java
+files:
+- jira/atlassian-jira-software-7.4.0.tar.gz

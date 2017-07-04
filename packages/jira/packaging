@@ -1,0 +1,7 @@
+set -e
+#unzip
+tar xz -C jira/ -f jira/atlassian-jira-software-7.4.0.tar.gz
+
+mkdir -p ${BOSH_INSTALL_TARGET}/installdir
+cp -r jira/atlassian-jira-software-7.4.0-standalone/* ${BOSH_INSTALL_TARGET}/installdir
+
