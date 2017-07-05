@@ -4,12 +4,12 @@ packages:
 - jira
 - java
 templates:
-bin/ctl: bin/ctl
+  bin/ctl: bin/ctl
   bin/monit_debugger: bin/monit_debugger
   data/properties.sh.erb: data/properties.sh
-  config/set-jira-home.sh.erb: config/set-jira-home.sh
-  config/set-jre-home.sh.erb: config/set-jre-home.sh
-  config/jira.properties.erb: config/jira.properties
+  config/setenv.sh.erb: config/setenv.sh
+  config/config.sh.erb: config/config.sh
+  config/jira-config.properties.erb: config/jira-config.properties
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
   helpers/ctl_mountnfs.sh: helpers/ctl_mountnfs.sh

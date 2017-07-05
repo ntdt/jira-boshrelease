@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# -------------------------------------------------------------------------------------
+# The DIY backup script.
+#
+# This script is invoked to perform the backup of a Bitbucket Server,
+# or Bitbucket Data Center instance. It requires a properly configured
+# bitbucket.diy-backup.vars.sh file, which can be copied from
+# bitbucket.diy-backup.vars.sh.example and customized.
+# -------------------------------------------------------------------------------------
+
+# Ensure the script terminates whenever a required operation encounters an error
+set -e
+
+SCRIPT_DIR=$(dirname "$0")
+source "${SCRIPT_DIR}/utils.sh"
+source "${SCRIPT_DIR}/common.sh"
+source_archive_strategy
+source_database_strategy
+source_home_strategy
+source_elasticsearch_strategy
+
+check_command "jq"
+
+##########################################################
+backup_start
+
+# Run Elasticsearch backup in the background (if not configured, this will be a No-Operation)
+backup_elasticsearch &
+
+backup_wait
+
+#info "Backing up the database and filesystem in parallel"
+(backup_db && update_backup_progress 50) &
+(backup_home && update_backup_progress 50) &
+
+# Wait until home and database backups are complete
+wait $(jobs -p)
+
+# If necessary, report 100% progress back to the application, and unlock Bitbucket
+update_backup_progress 100
+
+if [ -n "${BACKUP_ARCHIVE_TYPE}" ]; then
+    #info "Archiving backups and cleaning up old archives"
+    archive_backup
+    #cleanup_old_archives
+fi
+
+success "Successfully completed the backup of your ${PRODUCT} instance"
+
+# Cleanup backups retaining the latest $KEEP_BACKUPS
+#cleanup_db_backups
+#cleanup_home_backups
+#cleanup_elasticsearch_backups
+
+
+

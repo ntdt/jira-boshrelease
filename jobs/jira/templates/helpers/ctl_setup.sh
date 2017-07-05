@@ -69,12 +69,6 @@ do
 done
 
 JAVA_HOME=/var/vcap/packages/java/<%= p("jira.java_version") %>/jre
-GIT_HOME=/var/vcap/packages/git
-
-# Put git in /usr/bin so ssh can use
-if [ ! -d "/usr/bin/git" ]; then
-      cp $GIT_HOME/bin/* /usr/bin/
-fi
 
 #Create jira Home Direrctory
 JIRA_HOME=/var/vcap/store/jira/home
@@ -93,28 +87,28 @@ RUNUSER=vcap
 # JIRA_HOME: Path to the jira home directory
 NAME=jira
 JIRA_INSTALLDIR=/var/vcap/packages/jira/installdir
-PIDFILE=$JIRA_HOME/log/jira.pid
+PIDFILE=$JIRA_HOME/var/vcap/packages/jira/installdir/work/catalina.pid
 
 file=$JIRA_HOME/shared/jira.properties
 if [ -d "$file" ]; then
-	rm -rf $JIRA_HOME/shared/jira.properties
-    echo "directory $JIRA_HOME/shared/jira.properties already exist so will be deleted"	
+	rm -rf $JIRA_HOME/jira-config.properties
+    echo "directory $JIRA_HOME/jira-config.properties already exist so will be deleted"	
 fi
 
 
 
-cp -rf /var/vcap/jobs/jira/config/jira.properties $JIRA_HOME/shared/jira.properties
-cp -rf /var/vcap/jobs/jira/config/set-jre-home.sh $JIRA_INSTALLDIR/bin/set-jre-home.sh
-cp -rf /var/vcap/jobs/jira/config/set-jira-home.sh $JIRA_INSTALLDIR/bin/set-jira-home.sh
+cp -rf /var/vcap/jobs/jira/config/jira-config.properties $JIRA_HOME/jira-config.properties
+cp -rf /var/vcap/jobs/jira/config/setenv.sh $JIRA_INSTALLDIR/bin/setenv.sh
+cp -rf /var/vcap/jobs/jira/config/config.sh $JIRA_INSTALLDIR/bin/config.sh
 
 
 
 chown -R $RUNUSER:$RUNUSER $JIRA_HOME $JIRA_INSTALLDIR 
 run_with_home() {
-        su - "$RUNUSER" -c "export GIT_HOME=${GIT_HOME};export PATH=$PATH:${GIT_HOME}/bin;export JAVA_HOME=${JAVA_HOME};export PATH=$PATH:${JAVA_HOME}/bin;export JIRA_HOME=${JIRA_HOME};${JIRA_INSTALLDIR}/bin/$1"
+        su - "$RUNUSER" -c "export JAVA_HOME=${JAVA_HOME};export PATH=$PATH:${JAVA_HOME}/bin;export JIRA_HOME=${JIRA_HOME};${JIRA_INSTALLDIR}/bin/$1"
 }
 run_with_home() {
-        su - "$RUNUSER" -c "export GIT_HOME=${GIT_HOME};export PATH=$PATH:${GIT_HOME}/bin;export JAVA_HOME=${JAVA_HOME};export PATH=$PATH:${JAVA_HOME}/bin;export JIRA_HOME=${JIRA_HOME};${JIRA_INSTALLDIR}/bin/$1"
+        su - "$RUNUSER" -c "export JAVA_HOME=${JAVA_HOME};export PATH=$PATH:${JAVA_HOME}/bin;export JIRA_HOME=${JIRA_HOME};${JIRA_INSTALLDIR}/bin/$1"
 }
 
 #
@@ -133,7 +127,6 @@ do_start()
 
 #
 # Function that stops the daemon/service
-#
 do_stop()
 {
     echo ${PIDFILE}

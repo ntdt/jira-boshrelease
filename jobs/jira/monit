@@ -1,5 +1,5 @@
 check process jira
-  with pidfile /var/vcap/sys/run/jira/jira.pid
+  with pidfile /var/vcap/packages/jira/installdir/work/catalina.pid
   start program "/var/vcap/jobs/jira/bin/monit_debugger jira_ctl '/var/vcap/jobs/jira/bin/ctl start'"
   stop program "/var/vcap/jobs/jira/bin/monit_debugger jira_ctl '/var/vcap/jobs/jira/bin/ctl stop'"
   group vcap
