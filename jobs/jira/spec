@@ -31,6 +31,8 @@ properties:
    description: "Directory where backup file will be"
    default: /var/vcap/store/archive
   jira:
+   server_proxy_name:
+    description: "server.proxy-name"
    jdbc_url:
     description: "jdbc:postgresql://localhost:5524/jira"
    jdbc_user: 
