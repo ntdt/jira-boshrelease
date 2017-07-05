@@ -9,10 +9,11 @@ templates:
   data/properties.sh.erb: data/properties.sh
   config/setenv.sh.erb: config/setenv.sh
   config/config.sh.erb: config/config.sh
+  config/dbconfig.xml.erb: config/dbconfig.xml
+  config/server.xml.erb: config/server.xml
   config/jira-config.properties.erb: config/jira-config.properties
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
-  helpers/ctl_mountnfs.sh: helpers/ctl_mountnfs.sh
   bbr/backup.sh.erb: bin/bbr/backup
   bbr/jira.diy-backup.vars.sh.erb: bin/bbr/jira.diy-backup.vars.sh
   bbr/common.sh.erb: bin/bbr/common.sh
@@ -30,46 +31,11 @@ properties:
    description: "Directory where backup file will be"
    default: /var/vcap/store/archive
   jira:
-   port:
-    description: "Port on which server is listening"
-   hazelcast_group_name:
-    description: "your-jira-cluster-name"
-   hazelcast_group_password:
-    description: "your-jira-cluster password"
-   plugin_search_elasticsearch_baseurl: 
-    description: "http://localhost:9200/"
-   server_session_cookie_name: 
-    description: "JSESSIONID"
-   server_proxy_name:
-    description: "server.proxy-name"
    jdbc_url:
     description: "jdbc:postgresql://localhost:5524/jira"
    jdbc_user: 
     description: "postgres user"
    jdbc_password: 
     description: "postgres password"
-   setup_license: 
-    description: "License jira"
-   setup_displayName:
-    description: "displayName"
-   setup_baseUrl: 
-    description: "https://jira.cfzcea.dev.desjardins.com"
-   setup_sysadmin_username:
-    description: "jira admin username"
-   setup_sysadmin_password: 
-    description: "jira admin password"
-   setup_sysadmin_displayName: 
-    description: "display name"
-   setup_sysadmin_emailAddress:
-    description: "emailAddress"
    java_version:
     description: "jdk1.8.0_131"
-   enable_ha: 
-    description: "active availability by autorize mount nfs and jira cluster property"
-    default: false
-   nfs_share_folder:
-     description: "directory to mount the shared folder"
-     default: ""
-   nfs_ip_server: 
-     description: "directory to mount the shared folder"
-     default: 0.0.0.0

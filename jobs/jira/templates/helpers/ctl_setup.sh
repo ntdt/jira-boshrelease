@@ -10,7 +10,6 @@ export JOB_DIR=/var/vcap/jobs/$JOB_NAME
 chmod 755 $JOB_DIR # to access file via symlink
 source $JOB_DIR/data/properties.sh
 source $JOB_DIR/helpers/ctl_utils.sh
-source $JOB_DIR/helpers/ctl_mountnfs.sh
 redirect_output ${output_label}
 export HOME=${HOME:-/home/vcap}
 
@@ -98,8 +97,11 @@ fi
 
 
 cp -rf /var/vcap/jobs/jira/config/jira-config.properties $JIRA_HOME/jira-config.properties
+cp -rf /var/vcap/jobs/jira/config/dbconfig.xml $JIRA_HOME/dbconfig.xml
 cp -rf /var/vcap/jobs/jira/config/setenv.sh $JIRA_INSTALLDIR/bin/setenv.sh
 cp -rf /var/vcap/jobs/jira/config/config.sh $JIRA_INSTALLDIR/bin/config.sh
+cp -rf /var/vcap/jobs/jira/config/server.xml $JIRA_INSTALLDIR/conf/server.xml
+
 
 
 
@@ -116,12 +118,6 @@ run_with_home() {
 #
 do_start()
 {
-    echo "HA="
-    echo <%= p("jira.enable_ha") %> 
-    if [ <%= p("jira.enable_ha") %> = true ]; then
-      mount_nfs
-      sleep 5
-    fi
     run_with_home start-jira.sh
 }
 
@@ -129,14 +125,13 @@ do_start()
 # Function that stops the daemon/service
 do_stop()
 {
-    echo ${PIDFILE}
-    if [ -e ${PIDFILE} ]; then
+    #echo ${PIDFILE}
+    #if [ -e ${PIDFILE} ]; then
       run_with_home stop-jira.sh 
-      kill_and_wait ${PIDFILE}
-    else
-      log_failure_msg "$NAME is not running."
-    fi
-    umount_nfs
+      #kill_and_wait ${PIDFILE}
+    #else
+      #log_failure_msg "$NAME is not running."
+    #fi
 }
 
 echo '$PATH' $PATH

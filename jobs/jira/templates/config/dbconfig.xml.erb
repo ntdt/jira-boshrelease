@@ -6,10 +6,10 @@
   <database-type>postgres72</database-type>
   <schema-name>public</schema-name>
   <jdbc-datasource>
-    <url>jdbc:postgresql://localhost:5524/jira</url>
+    <url><%= p("jira.jdbc_url") %></url>
     <driver-class>org.postgresql.Driver</driver-class>
-    <username>bitadmin</username>
-    <password>password</password>
+    <username><%= p("jira.jdbc_user") %></username>
+    <password><%= p("jira.jdbc_password") %></password>
     <pool-min-size>20</pool-min-size>
     <pool-max-size>20</pool-max-size>
     <pool-max-wait>30000</pool-max-wait>
