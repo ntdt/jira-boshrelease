@@ -1,0 +1,152 @@
+---
+name: jirasolo
+director_uuid: "UUID please"
+releases:
+- name: postgres
+  version: latest
+- name: jira
+  version: latest
+- name: haproxy
+  version: latest
+- name: monitor-server
+  version: latest
+
+
+networks:
+- name: default
+  subnets:
+  - range: 10.244.0.0/28
+    reserved: [10.244.0.1]
+    static: [10.244.0.12]
+    cloud_properties:
+      name: random
+
+resource_pools:
+- name: default
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version: latest
+  network: default
+  cloud_properties: {}
+
+compilation:
+  workers: 2
+  network: default
+  cloud_properties: {}
+
+update:
+  canaries: 1
+  canary_watch_time: 60000
+  update_watch_time: 60000
+  max_in_flight: 2
+
+instance_groups:
+- name: jira
+  instances: 1
+  resource_pool: default
+  networks:
+  - name: default
+    static_ips:
+    - 10.244.0.12
+  jobs:
+  - name: postgres
+    release: postgres
+    templates:
+    - name: postgres
+  - name: jira
+    release: jira
+    templates:
+    - name: jira
+  - name: haproxy
+    release: haproxy
+    templates:
+    - name: haproxy
+  - name: monitor-server
+    release: monitor-server
+    templates:
+    - name: monitor-server
+
+properties:
+ databases:
+  databases:
+  - citext: true
+    name: jira
+    tag: jira
+  port: 5524
+  roles:
+  - name: bitadmin
+    password: password
+    tag: admin
+    permissions:
+    - CONNECTION LIMIT 10
+ jira:
+  java_version: jdk1.8.0_131
+  server_proxy_name: jira.domain.com
+  jdbc_url: jdbc:postgresql://localhost:5524/jira
+  jdbc_user: bitadmin
+  jdbc_password: password
+ ha_proxy:
+  ssl_pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIDlzCCAn+gAwIBAgIEBSN8RzANBgkqhkiG9w0BAQsFADB8MQswCQYDVQQGEwJj
+    YTELMAkGA1UECBMCcWMxDzANBgNVBAcTBnF1ZWJlYzETMBEGA1UEChMKZGVzamFy
+    ZGluczEMMAoGA1UECxMDR1REMSwwKgYDVQQDEyNiaXRidWNrZXQuY2Z6Y2VhLmRl
+    di5kZXNqYXJkaW5zLmNvbTAeFw0xNzA0MjYyMDEyNTBaFw0xNzA3MjUyMDEyNTBa
+    MHwxCzAJBgNVBAYTAmNhMQswCQYDVQQIEwJxYzEPMA0GA1UEBxMGcXVlYmVjMRMw
+    EQYDVQQKEwpkZXNqYXJkaW5zMQwwCgYDVQQLEwNHVEQxLDAqBgNVBAMTI2JpdGJ1
+    Y2tldC5jZnpjZWEuZGV2LmRlc2phcmRpbnMuY29tMIIBIjANBgkqhkiG9w0BAQEF
+    AAOCAQ8AMIIBCgKCAQEAkkqBigCtmx28Jq90Fq7mGku+pvXKgrPt+htWjFOgZtxj
+    1iyaD1Q9rwq5YX/saNolb5r9INBZNxm0vD219UDgNxz+2qn7QqP0Agrs6FlpuwzI
+    MKc/ovtCSF4lvea5rXHiAZ/jnYMGoQ5fwSsItfcCa+nKktcoL+CnPDB/geQ1ozXh
+    QFpymH7AIXMRhYVcFoNUt0u3rzZ/dNJ4wkY5Wm2lQmPY7z9zmJ/n5rW2QhY2QNkv
+    FywE/s36qVq7GhaGtb7p6ftwN8ZO/JQRcLG9Wv6ulicWEDFpE7va6XWbLPAx0NqJ
+    RCu81w+uf2JJ+ajAcQAWqnIife0cUYIzVNWH8zssswIDAQABoyEwHzAdBgNVHQ4E
+    FgQUbS6p5lB3TMw97i+GFPe5YJMTyykwDQYJKoZIhvcNAQELBQADggEBAFsVglKq
+    3DR4YCaYnvq79wwwRYSpV4RCR9ETbScmjlzZ7l0JKLGdCodZMKovnZno1qIHLnJF
+    ZUsYqeYJTzrWh9mBq2r7D5TBr9n1o0Pfedomd+HTBSckv53g/P0+1u+Hbg5Cyq64
+    e1slSW5s8sD0xI06HoK4cSa05nxYkJHR5T2vzFJTVqAchq6imhhcTHGZo7xRTyYm
+    VsEltenyHJr4P0P+bapHP4Lv6v+CyXWyj4pdpnfh11NdGcJvK3iu5o+AbIatF4mW
+    IUI1+h1MbZyDl9Q8bkSKLnM4bVvRMUfseLv4Oe21Y2pB2wD7Ci/euXrAjPBUqj7v
+    TyFbYLq+HwkXV5o=
+    -----END CERTIFICATE-----
+
+
+    -----BEGIN PRIVATE KEY-----
+    MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCSSoGKAK2bHbwm
+    r3QWruYaS76m9cqCs+36G1aMU6Bm3GPWLJoPVD2vCrlhf+xo2iVvmv0g0Fk3GbS8
+    PbX1QOA3HP7aqftCo/QCCuzoWWm7DMgwpz+i+0JIXiW95rmtceIBn+OdgwahDl/B
+    Kwi19wJr6cqS1ygv4Kc8MH+B5DWjNeFAWnKYfsAhcxGFhVwWg1S3S7evNn900njC
+    RjlabaVCY9jvP3OYn+fmtbZCFjZA2S8XLAT+zfqpWrsaFoa1vunp+3A3xk78lBFw
+    sb1a/q6WJxYQMWkTu9rpdZss8DHQ2olEK7zXD65/Ykn5qMBxABaqciJ97RxRgjNU
+    1YfzOyyzAgMBAAECggEAaJkjNBQ2DSHepN5wp8NYPVcJM4Gs0XVrY5fmcyFcIA/W
+    xo1PfkRicmS9lewMkg/gEoOEF9FA6PfVVX7eOkSvzFhMFPbS85wc3NUI/TzpL1f9
+    T2RWSOdURkAixjxRaKVzzmuPKNFFjSSk7I4jhU/fCF+6evGiB1Ge4Zdfo/UTMOU6
+    8YCgljOpZIKiqppsTq6uB30BeuL5+iICKUpDHmFqGvCWoPKkc9kcVH9Ac9QCLw+c
+    lZuAJ9mcNWROuLiJ8MZ67PBHGMVOl2kvWRC+gawvr9KxHxjyvNk8a0aHmpNftJ3y
+    f2x+dSkvXbvl5N6AvY0fijiqljdTsYmJ+SwZWN2BMQKBgQDxRFpz3TK3wGvyMUPl
+    KLOoQQtBG+zXBeuwSj6wNrWc5Noy2OzfXV3eYSUdV+oi0h9V1GcVabS7V1vnZpQ0
+    G3P/FTPRW98fkReOdBCvoFh6SGonFD16jxCVyJgAX2LDqs5vVNeUYWT/oqIFWC3r
+    e/KeovOcUGszs0V1Q0HMjUBPuwKBgQCbOWzQ5XXqc1+Cr9+BI5t/Cju3QTYr5L+L
+    dxT9RGhhzpKrvoAMCs1BQQPRAqqofA1Ep7knLfGcjL0FqXjE9k0xDuxo1rBgXyVv
+    YMere2zh6cJp1hZJAwLWkoLpKp4/+qvfNXy3rH3rkd76j+AOXqP9iuCnt4vq8NK7
+    VUsDltlbaQKBgHIFF6pCE0H70gf3eFrITX9qneL7S4ai6au6qr2kXVf0X5pAIlG9
+    UitSRbQEZEZofx6U7tKTzjHrKyfEtq2Ze8xFPOPoQx4r97H+8BPP94By0Jf/XL6a
+    9f+TeSJT8dz+z+iVc/xPuueE+IUGE02CmjqWUALDjqY0RtMQIfyFlKsZAoGAPy4B
+    d4leFF5/ap8RNuv6V5wfsDhPx0/lEuwWU/vrDJxbIKJ6VexznPLMjd8q/Ub404/9
+    EdBmflTefxZ6vJiP1L8BRK7VvXQctZfLzaWALPfLlO55xZ//IL0joaoiHWJ3YHPR
+    3qTL3/1Qp+W1ycOFtiY3yKwxvB/ndi6CSOS2dbkCgYBAqXVcJmSwj3jcvuA4kTZ5
+    Cgx3M0pzvPOg5HbWgs8Wye/esHP6HGjiK38jZXdLBNZOOJkbwGDXKoGRcJZC38ZF
+    BX1t4PWkaYhgwW0NkwZrAyfhbMpN6VG8nMvY5YdaVhYcnr4546gjICR1gJwS89wU
+    y+yAzqg5QioHxCok3+KAog==
+    -----END PRIVATE KEY-----
+  backend_servers: 
+  - 127.0.0.1
+  backend_port: 8080
+  https_redirect_all: true
+ monitor_server:
+  ephemeral_disk:
+   alert_percent: 6
+  persistent_disk:
+   alert_percent: 6
+
+  
