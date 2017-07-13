@@ -1,0 +1,22 @@
+---
+packages:
+- name: jira
+  version: 40f6c2062a361d63371099d99cfaf8b35f59e716
+  fingerprint: 40f6c2062a361d63371099d99cfaf8b35f59e716
+  sha1: d26ddc6da26a7a7bf9706bd2f2e811accc3fbb5f
+  dependencies:
+  - java
+- name: java
+  version: 817d4a370c19ae85238981759c7e1523e534a889
+  fingerprint: 817d4a370c19ae85238981759c7e1523e534a889
+  sha1: ac6c0352a961df55f456508dedabb69d98021bad
+  dependencies: []
+jobs:
+- name: jira
+  version: 70bee5e288e9b57891378b128f29ba67f544844c
+  fingerprint: 70bee5e288e9b57891378b128f29ba67f544844c
+  sha1: 62bf5116abc14d249c03fc5239e79729826334ba
+commit_hash: 6df75dba
+uncommitted_changes: true
+name: jira
+version: '2'

@@ -1,1 +1,9 @@
---- {}
+---
+jira/atlassian-jira-software-7.4.0.tar.gz:
+  object_id: 6ab190fa-47d7-46e3-9a4f-c566cf56a13b
+  sha: ec2fd8761ae572983e074943a451f3641f1fb533
+  size: 275365864
+java/jdk-8u131-linux-x64.tar.gz:
+  object_id: 6b6ab64a-944a-4707-9932-d2c0fc2eb0da
+  sha: c2a5582c049beb5c7af6b87a469bc53b759b7b87
+  size: 185540433
